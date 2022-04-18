@@ -1,23 +1,17 @@
 from network import neuralNetwork
 from dataPoint import dataPoint
+from model import getModel
 import numpy
 import csv
 import math
 import plotly.express as px
 import sys
 import pickle
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-def getModel(var):
-	if var == '1':
-		model = neuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
-		model.who = numpy.loadtxt("models/who.txt").reshape(output_nodes, hidden_nodes)
-		model.wih = numpy.loadtxt("models/wih.txt").reshape(hidden_nodes, input_nodes)
-	elif var == '2':
-		model = pickle.load(open("models/pima.pickle.dat", "rb"))
-	else:
-		print("usage: python mainScript.py <option(1=neural network/ 2=gradient boosting classifier)>")
-		exit()
-	return model
+
 
 def main():
 	if len(sys.argv) != 2:
@@ -25,11 +19,6 @@ def main():
 		exit()
 	else:
 		distance = 5 #distance between nodes
-		input_nodes = 3
-		hidden_nodes = 25
-		output_nodes = 2
-		learning_rate = 0.05
-
 		model=getModel(sys.argv[1])
 
 		lst = []
@@ -65,6 +54,17 @@ def main():
 		fig = px.imshow(predictedGrid, text_auto=True)
 		fig.write_image("image.jpeg")
 
+
+		cloudinary.config( 
+		  cloud_name = "bobingtoabrighterfuture", 
+		  api_key = "358739934852789", 
+		  api_secret = "wP_UdPpUO5ZjJF7OsjDyCRlmBcA" 
+		)
+
+
+		cloudinary.uploader.upload("image.jpeg", 
+  			use_filename = True, 
+  			unique_filename = False)
 
 if __name__ == '__main__':
 	main()
