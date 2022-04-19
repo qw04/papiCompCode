@@ -35,9 +35,9 @@ def main():
 		  a = dataPoint(i[0], i[1], i[2], i[3], i[4])
 		  newLst.append(a)
 
-		averageValues = sum([numpy.asarray(i.values) for i in newLst])/len(lst)
-		averageValues = averageValues.tolist()
-		trainAgain(averageValues[0], averageValues[1], averageValues[2])
+
+		for j in [numpy.asarray(i.values) for i in newLst]:
+			trainAgain(j[0], j[1], j[2])
 
 		x = [i.loc[0] for i in newLst]
 		y = [i.loc[1] for i in newLst]
@@ -52,7 +52,8 @@ def main():
 		  grid[int(loc[0])][int(loc[1])] = data
 
 		if sys.argv[1] == '1':
-			predictedGrid = [[round(model.query(i.values)[1][0], 2) for i in j] for j in grid]
+			#predictedGrid = [[round(model.query(i.values)[0-this is where you can change stuff to decide which probabilities to show on the graph]
+			predictedGrid = [[round(model.query(i.values)[0][0], 2) for i in j] for j in grid]
 		elif sys.argv[1] == '2':
 			predictedGrid = [[model.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j] for j in grid]
 

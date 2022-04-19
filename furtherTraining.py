@@ -10,7 +10,7 @@ def trainAgain(ph, tds, turbidity):
 	networkPred = n.query(numpy.asarray([ph, tds, turbidity]))
 	networkPred = [networkPred[0], networkPred[1]]
 	
-	if max(networkPred) <= 0.25:
+	if max(networkPred) <= 0.50:
 		n.train(numpy.asarray([ph, tds, turbidity]), g.predict(numpy.asarray([ph, tds, turbidity]).reshape(1, -1)).tolist()[0])
 		a_file = open("who.txt", "w")
 		for row in n.who:
