@@ -14,15 +14,15 @@ import cloudinary.api
 
 
 def main():
-	if len(sys.argv) != 2:
-		print("usage: python mainScript.py <option(1=neural network/ 2=gradient boosting classifier)>")
+	if len(sys.argv) != 3:
+		print("usage: python mainScript.py <option(1=neural network/ 2=gradient boosting classifier)> <name of file inside data>")
 		exit()
 	else:
 		distance = 5 #distance between nodes
 		model=getModel(sys.argv[1])
 
 		lst = []
-		with open('data.csv', newline='') as csvfile:
+		with open(f'data/{sys.argv[2]}', newline='') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 			for row in spamreader:
 				if row != "X,Y,PH,TDS,TURBIDITY".split(','):
@@ -52,7 +52,7 @@ def main():
 			predictedGrid = [[model.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j] for j in grid]
 
 		fig = px.imshow(predictedGrid, text_auto=True)
-		fig.write_image("image.jpeg")
+		fig.write_image(f"graphs/{sys.argv[2][:-4]}.jpeg")
 
 
 		cloudinary.config( 
@@ -62,7 +62,7 @@ def main():
 		)
 
 
-		cloudinary.uploader.upload("image.jpeg", 
+		cloudinary.uploader.upload(f"graphs/{sys.argv[2][:-4]}.jpeg", 
   			use_filename = True, 
   			unique_filename = False)
 
