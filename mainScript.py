@@ -1,6 +1,7 @@
 from network import neuralNetwork
 from dataPoint import dataPoint
 from model import getModel
+from furtherTraining import trainAgain
 import numpy
 import csv
 import math
@@ -28,11 +29,15 @@ def main():
 				if row != "X,Y,PH,TDS,TURBIDITY".split(','):
 					lst.append(list(map(float, row)))
 
+
 		newLst = []
 		for i in lst:
 		  a = dataPoint(i[0], i[1], i[2], i[3], i[4])
 		  newLst.append(a)
 
+		averageValues = sum([numpy.asarray(i.values) for i in newLst])/len(lst)
+		averageValues = averageValues.tolist()
+		trainAgain(averageValues[0], averageValues[1], averageValues[2])
 
 		x = [i.loc[0] for i in newLst]
 		y = [i.loc[1] for i in newLst]
