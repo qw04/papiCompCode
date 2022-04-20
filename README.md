@@ -7,4 +7,4 @@ classification with some data
 
 usage
 store csv in data/
-python mainScript.py 1 <csv name>.csv
+python mainScript.py 1 csv name.csv
