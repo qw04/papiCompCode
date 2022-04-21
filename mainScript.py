@@ -52,7 +52,7 @@ def main():
 		  grid[int(loc[0])][int(loc[1])] = data
 
 			#predictedGrid = [[round(model.query(i.values)[0-this is where you can change stuff to decide which probabilities to show on the graph]
-		predictedGrid_1 = [[round(model_1.query(i.values)[0][0], 2) for i in j] for j in grid]
+		predictedGrid_1 = [[round(model_1.query(i.values)[0][0], 4) for i in j] for j in grid]
 
 		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j] for j in grid]
 

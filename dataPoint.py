@@ -1,9 +1,12 @@
 import numpy
 
+
 class dataPoint:
+
   def __init__(self, x, y, ph, tds, turbidity):
+    rangeArray = [14.0, 60906.259999999995, 5.29]
     self.loc = numpy.asarray([x,y])
-    self.values = (ph, tds, turbidity)
+    self.values = (ph/rangeArray[0], tds/rangeArray[1], turbidity/rangeArray[2])
 
   def __str__(self):
     return f'x coord: {self.loc[0]}, y coord: {self.loc[1]}'
