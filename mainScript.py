@@ -15,15 +15,15 @@ import cloudinary.api
 
 
 def main():
-	if len(sys.argv) != 3:
+	if len(sys.argv) != 2:
 		print("usage: python mainScript.py <option(1=neural network/ 2=gradient boosting classifier)> <name of file inside data>")
 		exit()
 	else:
 		distance = 5 #distance between nodes
-		model=getModel(sys.argv[1])
-
+		model_1=getModel('1')
+		model_2=getModel('2')
 		lst = []
-		with open(f'data/{sys.argv[2]}', newline='') as csvfile:
+		with open(f'data/{sys.argv[1]}', newline='') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 			for row in spamreader:
 				if row != "X,Y,PH,TDS,TURBIDITY".split(','):
@@ -51,14 +51,16 @@ def main():
 		  loc = (data.loc)/5
 		  grid[int(loc[0])][int(loc[1])] = data
 
-		if sys.argv[1] == '1':
 			#predictedGrid = [[round(model.query(i.values)[0-this is where you can change stuff to decide which probabilities to show on the graph]
-			predictedGrid = [[round(model.query(i.values)[0][0], 2) for i in j] for j in grid]
-		elif sys.argv[1] == '2':
-			predictedGrid = [[model.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j] for j in grid]
+		predictedGrid_1 = [[round(model_1.query(i.values)[0][0], 2) for i in j] for j in grid]
 
-		fig = px.imshow(predictedGrid, text_auto=True)
-		fig.write_image(f"graphs/{sys.argv[2][:-4]}.jpeg")
+		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j] for j in grid]
+
+		fig = px.imshow(predictedGrid_1, text_auto=True)
+		fig.write_image(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
+
+		fig = px.imshow(predictedGrid_2, text_auto=True)
+		fig.write_image(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg")
 
 
 		cloudinary.config( 
@@ -68,7 +70,11 @@ def main():
 		)
 
 
-		cloudinary.uploader.upload(f"graphs/{sys.argv[2][:-4]}.jpeg", 
+		cloudinary.uploader.upload(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg", 
+  			use_filename = True, 
+  			unique_filename = False)
+
+		cloudinary.uploader.upload(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg", 
   			use_filename = True, 
   			unique_filename = False)
 
