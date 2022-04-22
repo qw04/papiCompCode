@@ -26,7 +26,9 @@ def main():
 		with open(f'data/{sys.argv[1]}', newline='') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 			for row in spamreader:
-				if row != "X,Y,PH,TDS,TURBIDITY".split(','):
+				if list("X,Y,PH,TDS,TURBIDITY".split(',')) == row[:5]:
+					intialRow = row
+				else:
 					lst.append(list(map(float, row)))
 
 
@@ -38,6 +40,7 @@ def main():
 
 		for j in [numpy.asarray(i.values) for i in newLst]:
 			trainAgain(j[0], j[1], j[2])
+
 
 		x = [i.loc[0] for i in newLst]
 		y = [i.loc[1] for i in newLst]
@@ -51,10 +54,10 @@ def main():
 		  loc = (data.loc)/5
 		  grid[int(loc[0])][int(loc[1])] = data
 
-			#predictedGrid = [[round(model.query(i.values)[0-this is where you can change stuff to decide which probabilities to show on the graph]
-		predictedGrid_1 = [[round(model_1.query(i.values)[0][0], 4) for i in j] for j in grid]
-
-		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j] for j in grid]
+		#predictedGrid_ = [[round(model.query(i.values)[0-this is where you can change stuff to decide which probabilities to show on the graph]
+		predictedGrid_1 = [[round(model_1.query(i.values)[0][0], 4) for i in j if i != None] for j in grid]
+		
+		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j if i != None] for j in grid]
 
 		fig = px.imshow(predictedGrid_1, text_auto=True)
 		fig.write_image(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
