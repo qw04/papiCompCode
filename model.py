@@ -16,9 +16,5 @@ def getModel(var):
 
 	elif var == '2':
 		model = pickle.load(open("models/pima.pickle.dat", "rb"))
-
-	else:
-		print("usage: python mainScript.py <option(1=neural network/ 2=gradient boosting classifier)> <name of file inside data>")
-		exit()
 		
 	return model

@@ -16,7 +16,7 @@ import cloudinary.api
 
 def main():
 	if len(sys.argv) != 2:
-		print("usage: python mainScript.py <option(1=neural network/ 2=gradient boosting classifier)> <name of file inside data>")
+		print("usage: python mainScript.py <name of file inside data>")
 		exit()
 	else:
 		distance = 5 #distance between nodes
