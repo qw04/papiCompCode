@@ -7,3 +7,4 @@ cloudinary
 psutil
 seaborn
 matplotlib
+gspread

@@ -12,9 +12,9 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import seaborn as sns
-
 from matplotlib.colors import LinearSegmentedColormap
 
+import gspread
 
 def main():
 	if len(sys.argv) != 2:
@@ -57,21 +57,28 @@ def main():
 		  grid[int(loc[0])][int(loc[1])] = data
 
 		#predictedGrid_ = [[round(model.query(i.values)[0-this is where you can change stuff to decide which probabilities to show on the graph]
-		predictedGrid_1 = [[round(model_1.query(i.values)[0][0], 4) for i in j if i != None] for j in grid]
-		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] for i in j if i != None] for j in grid]
+		predictedGrid_0_1 = [[round(model_1.query(i.values)[0][0], 4) if i != None else -1 for i in j] for j in grid]
+		predictedGrid_1_1 = [[round(model_1.query(i.values)[1][0], 4) if i != None else -1 for i in j] for j in grid]
+		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] if i != None else -1 for i in j] for j in grid]
 
-
-		myColors = ((0.8, 0.0, 0.0, 1.0), (0.8, 0.0, 0.0, 1.0))
-		cmap = LinearSegmentedColormap.from_list('Custom', myColors, len(myColors))
-
-		fig, ax =plt.subplots()
-
-		sns.heatmap(predictedGrid_1, linewidths=2, linecolor='yellow', cmap="ReGr", annot=True, square=True, ax=ax)
+		cmap=LinearSegmentedColormap.from_list('bgr',["b","b","g", "w", "r"], N=256)
+		fig, ax =plt.subplots(1,2)
+		ax[0].set_title('bad quality probabilities')
+		sns.heatmap(predictedGrid_0_1, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[0], cbar=False)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
 
-		fig, ax =plt.subplots()
 
-		sns.heatmap(predictedGrid_2, linewidths=2, linecolor='yellow', cmap=cmap, vmin=0, vmax=1, annot=True, cbar=False, square=True, ax=ax)
+		cmap=LinearSegmentedColormap.from_list('brg',["b","b","r", "w", "g"], N=256)
+		ax[1].set_title('good quality probabilities')
+		sns.heatmap(predictedGrid_1_1, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[1], cbar=False)
+		plt.tight_layout()
+		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
+
+
+		cmap = LinearSegmentedColormap.from_list('Custom', ((0.0, 0.0, 0.8, 1.0), (0.8, 0.0, 0.0, 1.0), (0.0, 0.8, 0.0, 1.0)), 3)
+		fig, ax =plt.subplots()
+		ax.set_title('0=bad, 1=good,-1=land there')
+		sns.heatmap(predictedGrid_2, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, cbar=False, annot=True, square=True, ax=ax)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg")
 
 
@@ -89,6 +96,12 @@ def main():
 		cloudinary.uploader.upload(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg", 
   			use_filename = True, 
   			unique_filename = False)
+
+
+		sa = gspread.service_account(filename="serviceAccount.json")
+		sh = sa.open("Pi")
+		wks = sh.worksheet("Sheet1")
+		wks.append_rows(values=[[sys.argv[1][:-4].capitalize(), intialRow[-2], intialRow[-1]]])
 
 if __name__ == '__main__':
 	main()
