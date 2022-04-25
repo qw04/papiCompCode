@@ -39,8 +39,8 @@ def main():
 		  newLst.append(a)
 
 
-		# for j in [numpy.asarray(i.values) for i in newLst]:
-		# 	trainAgain(j[0], j[1], j[2])
+		for j in [numpy.asarray(i.values) for i in newLst]:
+			trainAgain(j[0], j[1], j[2])
 
 
 		x = [i.loc[0] for i in newLst]
@@ -63,7 +63,7 @@ def main():
 		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] if i != None else -1 for i in j] for j in grid]
 
 		cmap=LinearSegmentedColormap.from_list('bgr',["b","b","g", "w", "r"], N=256)
-		fig, ax =plt.subplots(1,2)
+		fig, ax =plt.subplots(1,2,figsize = (10,15))
 		ax[0].set_title('bad quality probabilities')
 		sns.heatmap(predictedGrid_0_1, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[0], cbar=False)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
@@ -77,7 +77,7 @@ def main():
 
 
 		cmap = LinearSegmentedColormap.from_list('Custom', ((0.0, 0.0, 0.8, 1.0), (0.8, 0.0, 0.0, 1.0), (0.0, 0.8, 0.0, 1.0)), 3)
-		fig, ax =plt.subplots()
+		fig, ax =plt.subplots(figsize = (5,15))
 		ax.set_title('0=bad, 1=good,-1=land there')
 		sns.heatmap(predictedGrid_2, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, cbar=False, annot=True, square=True, ax=ax)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg")
@@ -97,7 +97,6 @@ def main():
 		cloudinary.uploader.upload(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg", 
   			use_filename = True, 
   			unique_filename = False)
-
 
 		sa = gspread.service_account(filename="serviceAccount.json")
 		sh = sa.open("Pi")
