@@ -21,7 +21,7 @@ def main():
 		print("usage: python mainScript.py <name of file inside data>")
 		exit()
 	else:
-		distance = 5 #distance between nodes
+		distance = 1 #distance between nodes
 		model_1=getModel('1')
 		model_2=getModel('2')
 		lst = []
