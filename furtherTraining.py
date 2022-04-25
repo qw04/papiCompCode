@@ -25,7 +25,8 @@ def trainAgain(ph, tds, turbidity):
 		b_file.close()
 
 	if max(networkPred) >= 0.75:
+		
 		g.fit(numpy.asarray([ph, tds, turbidity]), numpy.asarray([networkPred.index(max(networkPred))]))
-		pickle.dump(model, open("pima.pickle.dat", "wb"))
+		pickle.dump(g, open("pima.pickle.dat", "wb"))
 
 
