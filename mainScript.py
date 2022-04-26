@@ -20,7 +20,7 @@ def main():
 		print("usage: python mainScript.py <name of file inside data>")
 		exit()
 	else:
-		distance = 1 #distance between nodes
+		distance = 5 #distance between nodes
 		model_1=getModel('1')
 		model_2=getModel('2')
 		lst = []
@@ -63,7 +63,7 @@ def main():
 		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] if i != None else -1 for i in j] for j in grid]
 
 		cmap=LinearSegmentedColormap.from_list('bgr',["b","b","g", "w", "r"], N=256)
-		fig, ax =plt.subplots(1,2,figsize = (10,15))
+		fig, ax =plt.subplots(1,2)
 		ax[0].set_title('bad quality probabilities')
 		sns.heatmap(predictedGrid_0_1, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[0], cbar=False)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
@@ -77,7 +77,7 @@ def main():
 
 
 		cmap = LinearSegmentedColormap.from_list('Custom', ((0.0, 0.0, 0.8, 1.0), (0.8, 0.0, 0.0, 1.0), (0.0, 0.8, 0.0, 1.0)), 3)
-		fig, ax =plt.subplots(figsize = (5,15))
+		fig, ax =plt.subplots()
 		ax.set_title('0=bad, 1=good,-1=land there')
 		sns.heatmap(predictedGrid_2, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, cbar=False, annot=True, square=True, ax=ax)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg")
