@@ -20,7 +20,6 @@ def main():
 		print("usage: python mainScript.py <name of file inside data>")
 		exit()
 	else:
-		distance = 5 #distance between nodes
 		model_1=getModel('1')
 		model_2=getModel('2')
 		lst = []
@@ -32,6 +31,7 @@ def main():
 				else:
 					lst.append(list(map(float, row)))
 
+		distance = numpy.linalg.norm(numpy.array([int(lst[0][1]),int(lst[0][0])]) -numpy.array([int(lst[1][1]), int(lst[1][0])]))
 
 		newLst = []
 		for i in lst:
@@ -58,29 +58,39 @@ def main():
 			grid[int(loc[1]+minY)][int(loc[0]+minX)] = data
 
 		#predictedGrid_ = [[round(model.query(i.values)[0-this is where you can change stuff to decide which probabilities to show on the graph]
-		predictedGrid_0_1 = [[round(model_1.query(i.values)[0][0], 4) if i != None else -1 for i in j] for j in grid]
-		predictedGrid_1_1 = [[round(model_1.query(i.values)[1][0], 4) if i != None else -1 for i in j] for j in grid]
-		predictedGrid_2 = [[model_2.predict(numpy.asarray(i.values).reshape(1, -1)).tolist()[0] if i != None else -1 for i in j] for j in grid]
+		predictedGrid_0_1 = [[round(model_1.query(i.scale())[0][0], 4) if i != None else -1 for i in j] for j in grid]
+		predictedGrid_1_1 = [[round(model_1.query(i.scale())[1][0], 4) if i != None else -1 for i in j] for j in grid]
+		predictedGrid_0_2 = [[model_2.predict_proba(i.normal())[0][0] if i != None else -1 for i in j] for j in grid]
+		predictedGrid_1_2 = [[model_2.predict_proba(numpy.asarray(i.normal())).tolist()[0][1] if i != None else -1 for i in j] for j in grid]
 
 		cmap=LinearSegmentedColormap.from_list('bgr',["b","b","g", "w", "r"], N=256)
-		fig, ax =plt.subplots(1,2)
-		ax[0].set_title('bad quality probabilities')
+		fig, ax =plt.subplots(1,2,figsize=(math.ceil(len(grid[0])), 0.5*math.ceil(len(grid))))
+		ax[0].set_title('bad quality prob')
 		sns.heatmap(predictedGrid_0_1, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[0], cbar=False)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
 
 
 		cmap=LinearSegmentedColormap.from_list('brg',["b","b","r", "w", "g"], N=256)
-		ax[1].set_title('good quality probabilities')
+		ax[1].set_title('good quality prob')
 		sns.heatmap(predictedGrid_1_1, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[1], cbar=False)
 		plt.tight_layout()
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_1.jpeg")
 
 
-		cmap = LinearSegmentedColormap.from_list('Custom', ((0.0, 0.0, 0.8, 1.0), (0.8, 0.0, 0.0, 1.0), (0.0, 0.8, 0.0, 1.0)), 3)
-		fig, ax =plt.subplots()
-		ax.set_title('0=bad, 1=good,-1=land there')
-		sns.heatmap(predictedGrid_2, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, cbar=False, annot=True, square=True, ax=ax)
+
+		cmap=LinearSegmentedColormap.from_list('bgr',["b","b","g", "w", "r"], N=256)
+		fig, ax =plt.subplots(1,2, figsize=(math.ceil(len(grid[0])), 0.5*math.ceil(len(grid))))
+		ax[0].set_title('bad quality prob')
+		sns.heatmap(predictedGrid_0_2, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[0], cbar=False)
 		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg")
+
+
+		cmap=LinearSegmentedColormap.from_list('brg',["b","b","r", "w", "g"], N=256)
+		ax[1].set_title('good quality prob')
+		sns.heatmap(predictedGrid_1_2, linewidths=2, linecolor='yellow', cmap=cmap, vmin=-1, vmax=1, annot=True, square=True, ax=ax[1], cbar=False)
+		plt.tight_layout()
+		plt.savefig(f"graphs/{sys.argv[1][:-4]}_model_2.jpeg")
+
 
 
 		cloudinary.config( 
