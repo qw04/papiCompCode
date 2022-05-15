@@ -94,9 +94,9 @@ def main():
 
 
 		cloudinary.config( 
-		  cloud_name = "bobingtoabrighterfuture", 
-		  api_key = "358739934852789", 
-		  api_secret = "wP_UdPpUO5ZjJF7OsjDyCRlmBcA" 
+		  cloud_name = "", 
+		  api_key = "", 
+		  api_secret = "" 
 		)
 
 
