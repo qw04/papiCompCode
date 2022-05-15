@@ -1,4 +1,4 @@
-# somePapiStuff
+# Code for the Pa raspberry pi competition
 classification with some data
 
 0 - not drinkable
